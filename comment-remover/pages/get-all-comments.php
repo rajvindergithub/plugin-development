@@ -1,29 +1,62 @@
 <?php
-global $wpdb;
 
-$table_prefix = $wpdb->prefix;
+$message = ""; 
 
-$comments = $wpdb->get_results( "SELECT * FROM {$table_prefix}comments order by comment_ID desc ", ARRAY_A );
 
-//echo '<pre>';
-//print_r( $comments );
-//echo '</pre>';
+ if(isset($_POST) && isset($_POST['post-remove'])){
+     
+    global $wpdb;
+     
+    $table_name = $wpdb->prefix.'comments';
+
+    $get_post_id = $_POST['post-remove']; 
+     
+    $wpdb->delete(
+        $table_name,
+        array( 'comment_ID' => intval($get_post_id)),
+        array( '%d' )
+    );  
+     
+     $message = "Comment Delete Successfully.";
+     
+ }
+
+    global $wpdb;
+
+    $table_prefix = $wpdb->prefix;
+
+    $comments = $wpdb->get_results( "SELECT * FROM {$table_prefix}comments order by comment_ID desc ", ARRAY_A );
+ 
 
 ?>
 
-<div class="container">
+<div class="container-fluid">
+    
+    <?php if(!empty($message)):?>
+      <div class="row" id="comment-message">
+        <div class="col-d-12">
+            <div class="alert alert-success" role="alert">
+                <?php echo $message; ?>
+                </div>
+        </div>
+    </div>
+    
+    <?php endif; ?>
+    
+   
+    
     <div class="row">
         <div class="col-md-12">
 
-            <table class="table">
+            <table class="table" id="commentTable">
                 <thead>
                     <tr>
                         <th style="width: 2%">S.No</th>
                         <th style="width: 5%">P. ID</th>
                         <th style="width: 22%">P. URL</th>
                         <th style="width: 15%">C. Date</th>
-                        <th style="width: 38%">Content</th>
-                        <th style="width: 27%">Action</th>
+                        <th style="width: 40%">Content</th>
+                        <th style="width: 25%">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,19 +76,33 @@ $comments = $wpdb->get_results( "SELECT * FROM {$table_prefix}comments order by 
                         
                         </td>
                         <td><?php echo $comment['comment_date'];?></td>
-                        <td><?php echo $comment['comment_content'];?></td>
+                        <td>
+                            <?php if(strlen($comment['comment_content']) > 50): ?>
+                            <?php echo substr($comment['comment_content'], 0, 50);?> ...
+                            <?php else:?>
+                            <?php echo $comment['comment_content'];?>
+                            
+                            <?php endif ;?>
+                        
+                        </td>
                         <td>
                             
-                            <?php if($comment['comment_approved'] == 0):?>
-                                <button type="button" class="btn btn-warning">
-                                    Not Approve
-                                </button>
-                            <?php else:?>
-                                <button type="button" class="btn btn-primary">Approve</button>
-                            <?php endif; ?>
-                            
-                            <button type="button" class="btn btn-danger">Delete</button>
-                        
+                            <div style="display: flex; column-gap : 5px;  ">
+                                <?php if($comment['comment_approved'] == 0):?>
+                                    <button type="button" class="btn btn-warning">
+                                        Not Approve
+                                    </button>
+                                <?php else:?>
+                                    <button type="button" class="btn btn-primary">Approve</button>
+                                <?php endif; ?>
+
+                                <form id="remove-comment-form-<?php echo $comment['comment_ID'];?>" method="post" action="<?php echo $_SERVER["PHP_SELF"].'?page=comment-remover';?>" name="comment-remover">
+                                    <input type="hidden" name="post-remove" value="<?php echo $comment['comment_ID'];?>" />
+                                </form>
+
+                                <button type="button" class="btn btn-danger" onclick="formClick('remove-comment-form-<?php echo $comment['comment_ID'];?>');" >Delete</button>
+
+                            </div>
                         </td>
                     </tr>
 
@@ -67,3 +114,5 @@ $comments = $wpdb->get_results( "SELECT * FROM {$table_prefix}comments order by 
         </div>
     </div>
 </div>
+
+ 
