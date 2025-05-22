@@ -9,7 +9,7 @@ $message = "";
      
     $table_name = $wpdb->prefix.'comments';
 
-    $get_post_id = $_POST['post-remove']; 
+    $get_post_id = sanitize_text_field($_POST['post-remove']); 
      
     $wpdb->delete(
         $table_name,
@@ -20,6 +20,29 @@ $message = "";
      $message = "Comment Delete Successfully.";
      
  }
+
+    if(isset($_POST) && isset($_POST['approve-comment'])){
+        
+            $comment_id = sanitize_text_field($_POST['approve-comment']); 
+            $approve_status = sanitize_text_field($_POST['approve-status']); 
+             
+            global $wpdb;
+
+            $table_name = $wpdb->prefix .'comments'; // custom table with prefix
+
+            $wpdb->update(
+                $table_name,                     // Table name
+                array(                           // Data to update (column => value)
+                    'comment_approved' => $approve_status
+                ),
+                array(                           // WHERE clause (column => value)
+                    'comment_ID' => $comment_id
+                ),
+                array('%s'),                     // Data format (e.g., %s for string, %d for integer)
+                array('%d')                      // WHERE format
+            );
+    }
+
 
     global $wpdb;
 
@@ -52,9 +75,9 @@ $message = "";
                 <thead>
                     <tr>
                         <th style="width: 2%">S.No</th>
-                        <th style="width: 5%">P. ID</th>
+                        <th style="width: 10%">P. ID</th>
                         <th style="width: 22%">P. URL</th>
-                        <th style="width: 15%">C. Date</th>
+                        <th style="width: 10%">C. Date</th>
                         <th style="width: 40%">Content</th>
                         <th style="width: 25%">Action</th>
                     </tr>
@@ -67,10 +90,10 @@ $message = "";
                     foreach ( $comments as $comment ) {
                         ?>
                     <tr>
-                        <th scope="row"><?php echo $index++;?></th>
-                        <td><?php echo $comment['comment_post_ID'];?></td>
-                        <td>
-                           <a href="<?php echo get_permalink($comment['comment_post_ID']);?>" target="_blank">
+                        <td scope="row" style="text-align: center; "><?php echo $index++;?></td>
+                        <td>Post - <?php echo $comment['comment_post_ID'];?></td>
+                        <td style="font-weight: bold;">
+                           <a style="color: #000; " href="<?php echo get_permalink($comment['comment_post_ID']);?>" target="_blank">
                                 <?php echo get_the_title($comment['comment_post_ID']);?>
                             </a>
                         
@@ -87,13 +110,18 @@ $message = "";
                         </td>
                         <td>
                             
+                            <form method="post" action="<?php echo $_SERVER["PHP_SELF"].'?page=comment-remover';?>" id="approve-comment-form-<?php echo $comment['comment_ID'];?>">
+                                <input type="hidden" name="approve-comment" value="<?php echo $comment['comment_ID'];?>"  />
+                                 <input type="hidden" name="approve-status" value="" id="approve_status"  />
+                            </form>
+                            
                             <div style="display: flex; column-gap : 5px;  ">
                                 <?php if($comment['comment_approved'] == 0):?>
-                                    <button type="button" class="btn btn-warning">
+                                    <button type="button" class="btn btn-primary" onclick="approveComment('approve-comment-form-<?php echo $comment['comment_ID'];?>','approve');">Approve</button>
+                                <?php else:?>
+                                 <button type="button" onclick="approveComment('approve-comment-form-<?php echo $comment['comment_ID'];?>','not-approve');" class="btn btn-warning"  >
                                         Not Approve
                                     </button>
-                                <?php else:?>
-                                    <button type="button" class="btn btn-primary">Approve</button>
                                 <?php endif; ?>
 
                                 <form id="remove-comment-form-<?php echo $comment['comment_ID'];?>" method="post" action="<?php echo $_SERVER["PHP_SELF"].'?page=comment-remover';?>" name="comment-remover">
