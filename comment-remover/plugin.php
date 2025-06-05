@@ -6,6 +6,14 @@
  * Requires PHP:      7.2
  * Author:            Rajvinder Singh
 */
+ 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+
+// Your plugin code here
+
 
 add_action('admin_menu','blog_comment_page');
 
