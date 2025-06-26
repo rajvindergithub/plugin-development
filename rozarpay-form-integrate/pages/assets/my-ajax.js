@@ -19,9 +19,9 @@ jQuery('#submit-btn').click(function (e) {
         data: data,
         success: function (res) {
             if (res.success) {
-                $('#response').html('<p style="color:green;">' + res.data.message + '</p>');
+                jQuery('#response').html('<p style="color:green;">' + res.data.message + '</p>');
             } else {
-                $('#response').html('<p style="color:red;">Error: ' + res.data + '</p>');
+                jQuery('#response').html('<p style="color:red;">Error: ' + res.data + '</p>');
             }
         }
     });

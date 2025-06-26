@@ -8,19 +8,18 @@
 * Text Domain:       payment-gateway
 */
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-    // Exit if accessed directly
-}
+//$key_id = 'rzp_test_zu00OvJ5JPTfAp';
+//$key_secret = '0gHOWGAPoGq3YKUtZONZ7znA';
 
-require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require_once 'razorpay/Razorpay.php';
 
 use Razorpay\Api\Api;
 
 class rozar_payment_integrate {
 
-    private $api_key = 'rzp_test_Uew19G0f0FyxbW';
-    private $api_secret = '4H2ZJdPxMlMfVwloH31hvg73';
+    private $api_key;
+    private $api_secret;
+    private $api;
 
     public function __construct() {
 
@@ -30,6 +29,9 @@ class rozar_payment_integrate {
 
         add_action( 'wp_ajax_myplugin_handle_ajax', [$this, 'myplugin_handle_ajax_callback'] );
         add_action( 'wp_ajax_nopriv_myplugin_handle_ajax', [$this, 'myplugin_handle_ajax_callback'] );
+        
+        $this->api_key = 'rzp_test_zu00OvJ5JPTfAp';
+        $this->api_secret = '0gHOWGAPoGq3YKUtZONZ7znA';
 
     }
 
@@ -37,7 +39,7 @@ class rozar_payment_integrate {
 
         ob_start();
 
-        include_once plugin_dir_path( __FILE__ ).'pages/payment-form.php';
+            include_once plugin_dir_path( __FILE__ ).'pages/payment-form.php';
 
         return ob_get_clean();
 
@@ -54,24 +56,63 @@ class rozar_payment_integrate {
     }
 
     function myplugin_handle_ajax_callback() {
-        check_ajax_referer( 'myplugin_nonce', 'nonce' );
 
-//        $name = sanitize_text_field( $_POST['name'] );
-        
-        print_r($_POST);
+        if (
+            ! isset( $_POST['nonce'] ) ||
+            ! wp_verify_nonce( $_POST['nonce'], 'myplugin_nonce' )
+        ) {
+            wp_send_json_error( ['message' => 'Nonce check failed!'] );
+        }
 
         if ( empty( $_POST ) ) {
             wp_send_json_error( 'Name cannot be empty.' );
         }
 
-      
+        $full_name = sanitize_text_field( $_POST['full_name'] );
+        $payment_email = sanitize_text_field( $_POST['payment_email'] );
+        $payment_mobile = sanitize_text_field( $_POST['payment_mobile'] );
+        $payment_amount = sanitize_text_field( $_POST['payment_amount'] );
+
+//                return [
+//                    'name'=> $full_name,
+//                    'email'=> $payment_email,
+//                    'mobile' => $payment_mobile,
+//                    'amount'=> $payment_amount
+//                ];
+        
+            try{
+                
+            $api = new Api($this->api_key, $this->api_secret);
+
+              $order =   $api->order->create(
+                    array(
+                        'receipt' => 'rp_myfreeonline_'.time(),
+                        'amount' => $payment_amount*100,
+                        'currency' => 'INR',
+                        'notes'=> 
+                        array('payee_name'=> $full_name,
+                              'payee_email'=> $payment_email,
+                              'payee_mobile'=> $payment_mobile
+                             )
+                    )
+                );  
+            
+               $message = "Payment made successfully.";
+                
+            }
+            catch(Exception $e){
+                die("Error ".$e->getMessage());
+            }
+
         wp_send_json_success( [
-            'message' => $message
+            'message' => $message,
+            'id' => $order['id'],
+            'recipt' => $order['receipt']
         ] );
     }
-
 }
 
 new rozar_payment_integrate();
+ 
 
 ?>
