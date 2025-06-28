@@ -1,4 +1,4 @@
-
+<h2>Rozarpay Payment Integration</h2>
 <form id="payment_gate_form" method="post" action="">
     <div class="payment_gateway_field">
             <label for="payment_full_name">Full Name</label>
@@ -19,6 +19,7 @@
             <label for="payment_mobile">Amount </label>
             <input type="text" name="amount" id="payment_amount" placeholder="Enter Amount"/>
         </div>
+    <div id="errors"></div>
     
         <input type="submit" value="Pay Now"  id="submit-btn" name="payment_button" />
 

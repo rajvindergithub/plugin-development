@@ -48,6 +48,11 @@ class rozar_payment_integrate {
     public function myplugin_enqueue_scripts() {
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'myplugin-ajax', plugin_dir_url( __FILE__ ) . 'pages/assets/my-ajax.js', ['jquery'], '1.0', true );
+        
+        wp_enqueue_script( 'rozarpay-checkout', 'https://checkout.razorpay.com/v1/checkout.js', ['jquery'], '1.0', false );
+        
+        wp_enqueue_script( 'validate-form', '//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js', ['jquery'], '1.0', true );
+        
 
         wp_localize_script( 'myplugin-ajax', 'myplugin_ajax_obj', [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -107,7 +112,9 @@ class rozar_payment_integrate {
         wp_send_json_success( [
             'message' => $message,
             'id' => $order['id'],
-            'recipt' => $order['receipt']
+            'recipt' => $order['receipt'],
+            'amount' => $order['amount']/100,
+            'key' => $this->api_key
         ] );
     }
 }
