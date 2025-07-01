@@ -1,6 +1,6 @@
 <?php
 /*
-* Plugin Name:       RozarPay Payment Integration
+* Plugin Name:       Hello World Gutenberg Block
 * Description:       Add RozarPay Payment Gateway for making payments
 * Version:           1.0
 * Requires PHP:      7.2
@@ -103,7 +103,7 @@ class rozar_payment_integrate {
                 );  
             
                $message = "Payment made successfully.";
-                
+                //core web vital
             }
             catch(Exception $e){
                 die("Error ".$e->getMessage());
