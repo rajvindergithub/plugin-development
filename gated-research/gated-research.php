@@ -13,10 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-
-
-
-
 // register research article post type 
 function ra_register_cpt() {
     register_post_type('research_article', [
@@ -104,5 +100,49 @@ function get_research_article_by_id( $request ) {
 }
 
 
+//all post shortcode
+
+function get_all_research_article(){
+    
+    // 🔐 Restrict to logged-in users
+    if ( ! is_user_logged_in() ) {
+        $login_url = esc_url( wp_login_url( get_permalink() ) );
+        return '<p>' . esc_html__( 'You must be logged in to view research articles.', 'research-article-api' ) . 
+               ' <a href="' . $login_url . '">' . esc_html__( 'Login here', 'research-article-api' ) . '</a></p>';
+    }
+    
+    
+    
+     $args = array(
+        'post_type'      => 'research_article',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+         'order'         => 'asc'   
+    );
+    
+    
+    $query = new WP_Query( $args );
+
+    if ( ! $query->have_posts() ) {
+        return '<p>' . esc_html__( 'No research articles found.', 'gated-research' ) . '</p>';
+    }
+
+    $output = '<div class="research-articles-list">';
+    while ( $query->have_posts() ) {
+        $query->the_post();
+        $output .= '<div class="research-article">';
+        $output .= '<h3>' . esc_html( get_the_title() ) . '</h3>';
+        $output .= '<p>' . esc_html(  get_the_content() ) . '</p>';
+        $output .= '</div>';
+    }
+    $output .= '</div>';
+
+    wp_reset_postdata();
+
+    return $output;
+    
+}
+
+add_shortcode( 'research_articles_shortcode', 'get_all_research_article' );
 
 ?>
