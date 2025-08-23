@@ -100,6 +100,9 @@ function get_research_article_by_id( $request ) {
     
 //result url
 // change article id when hower on cpt list in research edit href
+// change the wordpress directory also for get result     
+    
+//http://localhost/{wordpress-directory}/wp-json/eg/v1/articles/{id}
     
 //http://localhost/plugin-development/wp-json/eg/v1/articles/193
 //http://localhost/plugin-development/wp-json/eg/v1/articles/194    
