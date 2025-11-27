@@ -13,27 +13,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Fetch_Live_Odds {
 
-    /**
-     * @var array CSS classes to scrape.
-     */
+  
     private $target_classes = ['card__item'];
 
-    /**
-     * @var int Limit number of results.
-     */
+    
     private $limit = 10;
 
-    /**
-     * Constructor: Hook into WordPress.
-     */
+    
     public function __construct() {
         add_shortcode( 'fetch_odds_live', [ $this, 'shortcode_callback' ] );
     }
 
-    /**
-     * Shortcode callback.
-     * Usage: [fetch_odds_live url="https://example.com"]
-     */
+
     public function shortcode_callback( $atts ) {
         $atts = shortcode_atts(
             [
@@ -57,24 +48,35 @@ class Fetch_Live_Odds {
             return '<p style="color:red;">No data found.</p>';
         }
 
-        // Display results as HTML list
+        $rowCount = 0; 
         $output  = '<div class="fetch-live-odds">';
-        $output .= '<ul>';
-        foreach ( $results as $row ) {
-            $output .= '<li>' . esc_html( implode( ' ', $row ) ) . '</li>';
+        $output .= '<table width="150%">';
+        foreach ( $results as $rows ) {
+            
+        $output .= '<tr width="150%">';
+            foreach($rows as $row){
+              $rowCount++; 
+                
+                $class = ($rowCount === 2) ? 'bold':''; 
+                
+                if (strtolower($row) === 'signup') continue;
+                
+                $row = preg_replace('/(?<!^)([A-Z])/', ' $1', $row);
+                
+                 $output .= '<td class='.$class.'>'.$row.'</td>';
+                
+            }
+        $output .= '</tr>';
+            
         }
-        $output .= '</ul>';
+        $output .= '</table>';
         $output .= '</div>';
 
         return $output;
+        
     }
 
-    /**
-     * Fetch and scrape data from URL.
-     *
-     * @param string $url
-     * @return array|WP_Error
-     */
+ 
     private function fetch_data( $url ) {
         $response = wp_remote_get(
             $url,
@@ -100,7 +102,6 @@ class Fetch_Live_Odds {
 
         $xpath = new DOMXPath( $dom );
 
-        // Build XPath query for all target classes
         $conditions = [];
         foreach ( $this->target_classes as $class ) {
             $conditions[] = "contains(concat(' ', normalize-space(@class), ' '), ' {$class} ')";

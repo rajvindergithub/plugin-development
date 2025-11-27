@@ -23,7 +23,7 @@ function wordpress_custom_rating($attributes){
         ), $attributes, "student"
     );
     
-    return "<h3>From Brand: {$attributes['brand']}, we get great rating of : {$attribute['rating']; } </h3>"
+    return "<h3>From Brand: {$attributes['brand']}, we get great rating of : {$attribute['rating']; } </h3>"; 
     
 }
 
