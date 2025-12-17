@@ -55,7 +55,7 @@ function tdcb_handle_form_export(){
         $filename = "data_csv_".time().".csv"; 
         
             header("Content-Type: text/csv; charset=utf-8;");
-            header("Content-Dispositions: attachment; filename=".$filename);
+            header("Content-Disposition: attachment; filename=".$filename);
         
             $output = fopen("php://output", "w");
         
