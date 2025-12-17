@@ -26,10 +26,7 @@ function cdu_add_script_file(){
     wp_localize_script("cdu-script-js","cdu_object", array(
         "ajax_url" => admin_url('admin-ajax.php')
     ));
-    
-    
-    
-    
+   
 }
 
 add_action('wp_ajax_cdu_submit_form_data','cdu_ajax_handler');
