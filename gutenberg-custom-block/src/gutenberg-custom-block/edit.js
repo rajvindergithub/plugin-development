@@ -4,7 +4,8 @@ import { __ } from '@wordpress/i18n';
 import {
 	useBlockProps,
 	MediaUpload,
-	InspectorControls
+	InspectorControls, 
+    MediaUploadCheck
 } from '@wordpress/block-editor';
 
  import {
@@ -13,65 +14,77 @@ import {
 	Button
 } from '@wordpress/components';
 
-import './editor.scss';
-
+ 
 
 export default function Edit(  { attributes, setAttributes } ) {
 
-	const { textValue, imageUrl } = attributes;
+      const { images } = attributes;
 
-	return (
-		<div { ...useBlockProps( ) }>
-			 	<InspectorControls>
- 					<PanelBody
-					title="Upload Image for Image Gallery"
-					initialOpen={true}
-				>
+    const onSelectImages = (media) => {
 
-					<TextControl label="Enter Gallery Heading" onChange={(value) =>
-							setAttributes({ textValue: value })
-						} value={textValue} />
-				 
-									<MediaUpload
-						onSelect={(media) =>
-							setAttributes({ imageUrl: media.url })
-						}
-						allowedTypes={['image']}
-						render={({ open }) => (
-							<Button
-								onClick={open}
-								variant="primary"
-							>
-								Upload Image
-							</Button>
-						)}
-					/>
+        const imageArray = media.map(img => ({
+            id: img.id,
+            url: img.url
+        }));
+
+        setAttributes({
+            images: imageArray
+        });
+    };
+
+    return(
+
+            <div {...useBlockProps()}>
+                  <MediaUploadCheck>
+                    <MediaUpload 
+                        onSelect={onSelectImages}
+                        allowedTypes={['image']}
+                        multiple={true}
+                        gallery={true}
+                        value={images.map(img => img.id)}
+                        render={
+                            ({open}) => (
+                                    <Button variant='primary' onClick={open}>
+                                        Upload Gallery Image
+                                    </Button>
+                            ) }   
+                    />
+                  </MediaUploadCheck>
+
+                   {images.length > 0 && (
+
+                        <div style={{
+                                display: "flex",
+                                gap: "10px",
+                                marginTop: "15px",
+                                flexWrap: "wrap"
+
+                        }}>
+
+                            {images.map((img, index) => (
+
+                        <img
+                            key={index}
+                            src={img.url}
+                            alt=""
+                            style={{
+                                width: "100px",
+                                height: "100px",
+                                objectFit: "cover"
+                            }}
+                        /> 
 
 
-				</PanelBody>
-				</InspectorControls>
+                            ))}
 
-<div className="gutenblog-preview">
+                        </div>
 
-				{textValue && (
-					<h3>{textValue}</h3>
-				)}
+                   )}
 
-				{imageUrl && (
-					<img
-						src={imageUrl}
-						alt=""
-						style={{
-							marginTop: '10px',
-							maxWidth: '100%'
-						}}
-					/>
-				)}
-
-			</div>
+            </div>
 
 
+    )
 
-		</div>
-	);
+ 
 }

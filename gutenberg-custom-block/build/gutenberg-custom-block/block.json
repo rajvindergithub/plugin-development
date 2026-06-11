@@ -12,13 +12,9 @@
     "html": false
   },
   "attributes": {
-    "textValue": {
-      "type": "string",
-      "default": ""
-    },
-    "imageUrl": {
-      "type": "string",
-      "default": ""
+    "images": {
+      "type": "array",
+      "default": []
     }
   },
   "textdomain": "gutenberg-custom-block",

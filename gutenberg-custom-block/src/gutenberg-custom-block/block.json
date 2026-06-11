@@ -12,11 +12,7 @@
 		"html": false
 	},
 	  "attributes": {
-    "textValue": {
-      "type": "string",
-      "default": ""
-    },
-    "imageUrl": {
+    "images": {
       "type": "array",
       "default": []
     }

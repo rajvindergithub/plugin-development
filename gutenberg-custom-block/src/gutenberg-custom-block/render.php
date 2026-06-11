@@ -18,30 +18,28 @@
 /**
  * Render callback
  */
+ 
 
-$text  = $attributes['textValue'] ?? '';
-$image = $attributes['imageUrl'] ?? '';
+/**
+ * Render Gallery Block
+ */
 
-ob_start();
-?>
+if ( ! empty( $attributes['images'] ) ) {
 
-<div class="gutenblog-output">
+    echo '<div class="custom-gallery">';
 
-    <?php if ( $image ) : ?>
-        <div class="gutenblog-image">
-            <img src="<?php echo esc_url( $image ); ?>" alt="">
-        </div>
-    <?php endif; ?>
+    foreach ( $attributes['images'] as $image ) {
 
-    <?php if ( $text ) : ?>
-        <div class="gutenblog-text">
-            <h3>
-                <?php echo esc_html( $text ); ?>
-            </h3>
-        </div>
-    <?php endif; ?>
+        if ( isset( $image['url'] ) ) {
 
-</div>
+            echo '<div class="gallery-item">';
 
-<?php
-return ob_get_clean();
+            echo '<img src="' . esc_url( $image['url'] ) . '" alt="" />';
+
+            echo '</div>';
+        }
+    }
+
+    echo '</div>';
+}
+

@@ -17,13 +17,11 @@ return array(
 			'html' => false
 		),
 		'attributes' => array(
-			'textValue' => array(
-				'type' => 'string',
-				'default' => ''
-			),
-			'imageUrl' => array(
-				'type' => 'string',
-				'default' => ''
+			'images' => array(
+				'type' => 'array',
+				'default' => array(
+					
+				)
 			)
 		),
 		'textdomain' => 'gutenberg-custom-block',
