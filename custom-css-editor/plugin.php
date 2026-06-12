@@ -25,51 +25,28 @@ function add_custom_page_fn() {
         20
     );
 }
+
 add_action('admin_menu', 'add_custom_page_fn');
 
 function add_custom_css(){
     
     $css_save_option = get_option('save_custom_css', '');
-    
-   // echo $css_save_option; 
-    
-    
         echo '<h1 class="heading_plugin_css">Add Theme Custom CSS</h1>'; 
-    
- 
-    
-    
         $template = plugin_dir_path( __FILE__ ) . 'template/editor.php';
-
         include $template;
-    
- 
-    
- 
 }
 
  
-
 function save_custom_css_code(){
     
-    	if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( 'Unauthorized access' );
 	}
 
-   
     check_admin_referer('nonce_custom_css'); 
-    
     $get_css_code = isset($_POST['custom_css_textarea_code']) ? wp_unslash( $_POST['custom_css_textarea_code'] ) : '' ;
-    
-    
     update_option('save_custom_css', $get_css_code);
-    
     $upload_dir = wp_upload_dir();
-    
-    echo '<pre>';
-     print_r($upload_dir); 
-    echo '</pre>';
-    
     $css_dir = trailingslashit( $upload_dir['basedir'] ) . 'custom-css/';
 
     // Create directory if not exists
@@ -78,23 +55,16 @@ function save_custom_css_code(){
     }
     
     $filename = 'custom-css-' . date( 'Ymd-His' ) . '.css';
-
     $filepath = $css_dir . $filename;
-    
-     file_put_contents( $filepath, $get_css_code );
-    
-     update_option( 'custom_css_file_path', $filename );
+    file_put_contents( $filepath, $get_css_code );
+    update_option( 'custom_css_file_path', $filename );
+    cec_keep_latest_10_files( $css_dir );
    
     wp_redirect(
-		admin_url( 'admin.php?page=add-custom-css&updated=1ddd' )
+		admin_url( 'admin.php?page=add-custom-css&updated=1' ); 
+        exit;
 	);
-    
-    cec_keep_latest_10_files( $css_dir );
-    
-       exit;
-    
-    
-	
+     
 }
 
 add_action('admin_post_custom_css_save_hidden', 'save_custom_css_code');
@@ -109,7 +79,6 @@ function cec_enqueue_latest_css() {
     }
 
     $upload_dir = wp_upload_dir();
-
     $file_path = trailingslashit( $upload_dir['basedir'] ) . 'custom-css/' . $filename;
     $file_url  = trailingslashit( $upload_dir['baseurl'] ) . 'custom-css/' . $filename;
 
@@ -123,22 +92,16 @@ function cec_enqueue_latest_css() {
         );
     }
     
-    
-    
 }
 add_action( 'wp_enqueue_scripts', 'cec_enqueue_latest_css' );
 
 
 function cec_keep_latest_10_files( $directory ) {
     
-    echo $directory; 
-
     $files = glob( $directory . '*.css' );
-
     if ( count( $files ) <= 10 ) {
         return;
     }
-
     // Sort newest first
     usort( $files, function( $a, $b ) {
         return filemtime( $b ) - filemtime( $a );
@@ -146,7 +109,6 @@ function cec_keep_latest_10_files( $directory ) {
 
     // Delete files after first 10
     $old_files = array_slice( $files, 10 );
-
     foreach ( $old_files as $file ) {
         wp_delete_file( $file );
     }
