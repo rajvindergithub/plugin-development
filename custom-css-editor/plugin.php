@@ -61,10 +61,10 @@ function save_custom_css_code(){
     cec_keep_latest_10_files( $css_dir );
    
     wp_redirect(
-		admin_url( 'admin.php?page=add-custom-css&updated=1' ); 
-        exit;
+		admin_url( 'admin.php?page=add-custom-css&updated=1' )
 	);
-     
+    
+    exit; 
 }
 
 add_action('admin_post_custom_css_save_hidden', 'save_custom_css_code');
