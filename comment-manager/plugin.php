@@ -1,8 +1,8 @@
 <?php 
 
 /*
- * Plugin Name:       Comment Remover
- * Description:       Read, Remove Blog Comment
+ * Plugin Name:       Comment Manager
+ * Description:       Comment Manager helps you efficiently moderate WordPress comments.
  * Requires PHP:      7.2
  * Author:            Rajvinder Singh
 */
@@ -23,7 +23,7 @@ define('PLUGIN_URL', plugin_dir_url(__FILE__));
 
 
 function blog_comment_page(){
-    add_menu_page( "Remove Blog Comments","Comment Remover", 'manage_options', 'comment-remover', 'comments_remover', 'dashicons-admin-generic', 6 );
+    add_menu_page( "Remove Blog Comments","Comment Manager", 'manage_options', 'comment-remover', 'comments_remover', 'dashicons-admin-generic', 6 );
 }
 
 
@@ -68,7 +68,5 @@ function enqueue_bootstrap_assets() {
 }
 
 add_action('admin_enqueue_scripts', 'enqueue_bootstrap_assets');
-
-
-
+ 
 ?>

@@ -1,3 +1,7 @@
+<style type="text/css">
+    .heading_table h1{ background-color: #F0f0f0; padding: 20px 10px; margin-top: 10px; border-radius: 10px;  font-size: 24px; }
+</style>
+
 <?php
 
 $message = ""; 
@@ -66,6 +70,14 @@ $message = "";
     
     <?php endif; ?>
     
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="heading_table">
+                <h1>Comment Manager</h1>
+            </div>
+        </div>
+    </div>
    
     
     <div class="row">
