@@ -1,0 +1,26 @@
+.mySwiper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.mySwiper .swiper-slide {
+    height: 600px;
+}
+
+.mySwiper .swiper-slide img {
+    width: 100%;
+     
+    object-fit: cover;
+    display: block;
+}
+
+.mySwiper .swiper-button-prev,
+.mySwiper .swiper-button-next {
+    width: 40px;
+    height: 40px;
+}
+
+.mySwiper .swiper-button-prev::after,
+.mySwiper .swiper-button-next::after {
+    font-size: 20px;
+}
